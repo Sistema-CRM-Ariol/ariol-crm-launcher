@@ -1,0 +1,9 @@
+[submodule "client-gateway"]
+	path = client-gateway
+	url = git@github.com:Sistema-CRM-Ariol/client-gateway.git
+[submodule "clients-ms"]
+	path = clients-ms
+	url = git@github.com:Sistema-CRM-Ariol/clients-ms.git
+[submodule "products-ms"]
+	path = products-ms
+	url = git@github.com:Sistema-CRM-Ariol/products-ms.git
