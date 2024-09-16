@@ -7,3 +7,6 @@
 [submodule "products-ms"]
 	path = products-ms
 	url = git@github.com:Sistema-CRM-Ariol/products-ms.git
+[submodule "auth-ms"]
+	path = auth-ms
+	url = git@github.com:Sistema-CRM-Ariol/auth-ms.git
