@@ -1,14 +1,11 @@
 ### Preparar entorno de desarrollo
 1. Clonar reposotorios
 2. Renombrar ``.env.template`` a ``.env``
-3. Ejecutar ``docker compose up --build`` para correr los microservicios
-
-
+3. Ejecutar el comando ``git submodule update --init --recursive`` para la reconstruccion de los submodulos
+4. Ejecutar ``docker compose up --build`` para correr los microservicios
 
 
 ### Pasos para crear los Git Submodules
-
-
 1. Crear un nuevo repositorio en GitHub
 2. Clonar el repositorio en la máquina local
 3. Añadir el submodule, donde `repository_url` es la url del repositorio y `directory_name` es el nombre de la carpeta donde quieres que se guarde el sub-módulo (no debe de existir en el proyecto)
