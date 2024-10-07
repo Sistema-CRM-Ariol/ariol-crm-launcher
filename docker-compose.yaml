@@ -7,6 +7,7 @@ services:
     image: nats:latest
     ports:
       - "8222:8222"
+      - "4222:4222"
 
   # ===== CLIENT GATEWAY ===== 
   client-gateway:
