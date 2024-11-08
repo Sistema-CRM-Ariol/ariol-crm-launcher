@@ -88,3 +88,19 @@ services:
       - ./products-ms/postgres:/var/lib/postgresql/data
 
 
+  # ===== AUTH MS ===== 
+  auth-ms:
+    restart: always
+    container_name: authentication-microservice
+    build: ./auth-ms
+    ports: 
+      - "8003:8003"
+    volumes:
+      - ./auth-ms/src:/usr/src/app/src
+    command: npm run start:dev
+    environment:
+      - PORT=8003
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+
+
