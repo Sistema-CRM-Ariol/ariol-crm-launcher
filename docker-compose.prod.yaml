@@ -1,0 +1,92 @@
+version: '3'
+
+services:
+
+  nats-server:
+    container_name: nats-server
+    image: nats:latest
+
+  # ===== CLIENT GATEWAY ===== 
+  client-gateway:
+    image: client-gateway
+    build:
+      context: ./client-gateway
+      dockerfile: dockerfile.prod
+
+    ports:
+      - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
+
+    environment:
+      - PORT=${CLIENT_GATEWAY_PORT}
+      - NATS_SERVERS=nats://nats-server:4222
+
+
+  # ===== AUTH MS ===== 
+  auth-ms:
+    image: auth-ms
+    build:
+      context: ./auth-ms
+      dockerfile: dockerfile.prod
+    environment:
+      - PORT=3000
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${AUTH_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
+
+  # ===== PRODUCTS MS ===== 
+  products-database:
+
+    image: postgres:13.5
+    container_name: products-database
+    restart: always
+    environment:
+      POSTGRES_DB: products
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5434:5432'
+
+  products-ms:
+    depends_on:
+      - products-database
+    container_name: products-microservice
+    restart: always
+    build:
+      context: ./products-ms
+      dockerfile: dockerfile.prod
+   
+    command:  npm run start:migrate:prod
+    environment:
+      - PORT=3000
+      - DATABASE_URL=${PRODUCTS_DATABASE_URL}
+      - NATS_SERVERS=nats://nats-server:4222
+
+
+
+  # ===== CLIENTS MS ===== 
+  clients-database:
+    image: postgres:13.5
+    container_name: clients-database
+    restart: always
+    environment:
+      POSTGRES_DB: clients
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5433:5432'
+
+  clients-ms:
+    depends_on:
+      - clients-database
+    restart: always
+    container_name: clients-microservice
+    build:
+      context: ./clients-ms
+      dockerfile: dockerfile.prod
+  
+    command:  npm run start:migrate:prod
+
+    environment:
+      - PORT=3000
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${CLIENTS_DATABASE_URL}
