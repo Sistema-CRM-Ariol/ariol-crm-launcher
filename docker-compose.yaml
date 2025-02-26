@@ -2,44 +2,12 @@ version: '3'
 
 services:
 
-  nats-server:
-    container_name: nats-server
+  crm-nats-server:
+    container_name: crm-nats-server
     image: nats:latest
     ports:
       - "8222:8222"
       - "4222:4222"
-
-  # ===== CLIENT GATEWAY ===== 
-  # client-gateway:
-  #   container_name: client-gateway
-  #   build: ./client-gateway
-  #   ports: 
-  #     - "${CLIENT_GATEWAY_PORT}:8000"
-  #   volumes:
-  #     - ./client-gateway/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - PORT=8000
-
-
-  # ===== CLIENTS MS ===== 
-  # clients-ms:
-  #   depends_on:
-  #     - clients-database
-  #   restart: always
-  #   container_name: client-microservice
-  #   build: ./clients-ms
-  #   ports: 
-  #     - "8001:8001"
-  #   volumes:
-  #     - ./clients-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=8001
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - DATABASE_URL=postgresql://admin:password@clients-database:5432/clients?schema=public
-
 
   clients-database:
     image: postgres:13.5
@@ -55,24 +23,6 @@ services:
     volumes:
       - ./clients-ms/postgres:/var/lib/postgresql/data
 
-  # ===== PRODUCTS MS ===== 
-  # products-ms:
-  #   depends_on:
-  #     - products-database
-  #   restart: always
-  #   container_name: products-microservice
-  #   build: ./products-ms
-  #   ports: 
-  #     - "8002:8002"
-  #   volumes:
-  #     - ./products-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=8002
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - DATABASE_URL=postgresql://admin:password@products-database:5432/products?schema=public
-
-
   products-database:
     image: postgres:13.5
     container_name: products-database
@@ -86,22 +36,3 @@ services:
 
     volumes:
       - ./products-ms/postgres:/var/lib/postgresql/data
-
-
-  # ===== AUTH MS ===== 
-  # auth-ms:
-  #   restart: always
-  #   container_name: authentication-microservice
-  #   build: ./auth-ms
-  #   ports: 
-  #     - "8003:8003"
-  #   volumes:
-  #     - ./auth-ms/src:/usr/src/app/src
-  #   command: npm run start:dev
-  #   environment:
-  #     - PORT=8003
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - DATABASE_URL=${AUTH_DATABASE_URL}
-  #     - JWT_SECRET=${JWT_SECRET}
-
-
