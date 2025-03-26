@@ -9,6 +9,19 @@ services:
       - "8222:8222"
       - "4222:4222"
 
+  auth-database:
+    image: postgres:13.5
+    container_name: auth-database
+    environment:
+      POSTGRES_DB: auth
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5431:5432'
+
+    volumes:
+      - ./auth-ms/postgres:/var/lib/postgresql/data
+
   clients-database:
     image: postgres:13.5
     container_name: clients-database
