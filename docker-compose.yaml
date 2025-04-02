@@ -9,15 +9,40 @@ services:
       - "8222:8222"
       - "4222:4222"
 
-  auth-database:
+  products-database:
     image: postgres:13.5
-    container_name: auth-database
+    container_name: products-database
     environment:
-      POSTGRES_DB: auth
+      POSTGRES_DB: products
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5430:5432'
+
+    volumes:
+      - ./products-ms/postgres:/var/lib/postgresql/data
+
+  warehouses-database:
+    image: postgres:13.5
+    container_name: warehouses-database
+    environment:
+      POSTGRES_DB: warehouses
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
     ports:
       - '5431:5432'
+    volumes:
+      - ./warehouses-ms/postgres:/var/lib/postgresql/data
+  
+  users-database:
+    image: postgres:13.5
+    container_name: users-database
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5432:5432'
 
     volumes:
       - ./auth-ms/postgres:/var/lib/postgresql/data
@@ -34,16 +59,3 @@ services:
 
     volumes:
       - ./clients-ms/postgres:/var/lib/postgresql/data
-
-  products-database:
-    image: postgres:13.5
-    container_name: products-database
-    environment:
-      POSTGRES_DB: products
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: password
-    ports:
-      - '5430:5432'
-
-    volumes:
-      - ./products-ms/postgres:/var/lib/postgresql/data
