@@ -10,9 +10,6 @@
 [submodule "auth-ms"]
 	path = auth-ms
 	url = git@github.com:Sistema-CRM-Ariol/auth-ms.git
-[submodule "next-crm-frontend"]
-	path = next-crm-frontend
-	url = git@github.com:Sistema-CRM-Ariol/next-crm-frontend.git
 [submodule "expenses-ms"]
 	path = expenses-ms
 	url = git@github.com:Sistema-CRM-Ariol/expenses-ms.git
