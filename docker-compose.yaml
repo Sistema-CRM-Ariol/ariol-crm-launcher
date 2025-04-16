@@ -59,3 +59,16 @@ services:
 
     volumes:
       - ./clients-ms/postgres:/var/lib/postgresql/data
+
+  inventories-database:
+    image: postgres:13.5
+    container_name: inventories-database
+    environment:
+      POSTGRES_DB: inventories
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5434:5432'
+
+    volumes:
+      - ./inventories-ms/postgres:/var/lib/postgresql/data
