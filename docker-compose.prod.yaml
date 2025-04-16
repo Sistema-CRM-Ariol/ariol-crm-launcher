@@ -15,7 +15,7 @@ services:
     image: client-gateway
     build:
       context: ./client-gateway
-      dockerfile: dockerfile.prod
+      dockerfile: dockerfile
 
     ports:
       - ${CLIENT_GATEWAY_PORT}:${CLIENT_GATEWAY_PORT}
@@ -24,22 +24,8 @@ services:
       - PORT=${CLIENT_GATEWAY_PORT}
       - NATS_SERVERS=nats://nats-server:4222
 
-
-  # ===== AUTH MS ===== 
-  auth-ms:
-    image: auth-ms
-    build:
-      context: ./auth-ms
-      dockerfile: dockerfile.prod
-    environment:
-      - PORT=3000
-      - NATS_SERVERS=nats://nats-server:4222
-      - DATABASE_URL=${AUTH_DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
-
   # ===== PRODUCTS MS ===== 
   products-database:
-
     image: postgres:13.5
     container_name: products-database
     restart: always
@@ -48,7 +34,9 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
     ports:
-      - '5434:5432'
+      - '5430:5432'
+    volumes:
+      - ./products-ms/postgres:/var/lib/postgresql/data
 
   products-ms:
     depends_on:
@@ -57,15 +45,71 @@ services:
     restart: always
     build:
       context: ./products-ms
-      dockerfile: dockerfile.prod
-   
+      dockerfile: dockerfile
     command:  npm run start:migrate:prod
     environment:
       - PORT=3000
       - DATABASE_URL=${PRODUCTS_DATABASE_URL}
       - NATS_SERVERS=nats://nats-server:4222
 
+  # ===== WAREHOUSE MS ===== 
+  warehouses-database:
+    image: postgres:13.5
+    container_name: warehouses-database
+    restart: always
+    environment:
+      POSTGRES_DB: warehouses
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5431:5432'
+    volumes:
+      - ./warehouses-ms/postgres:/var/lib/postgresql/data
 
+  warehouses-ms:
+    depends_on:
+      - warehouses-database
+    restart: always
+    container_name: warehouses-microservice
+    build:
+      context: ./warehouses-ms
+      dockerfile: dockerfile
+  
+    command:  npm run start:migrate:prod
+    environment:
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${WAREHOUSES_DATABASE_URL}
+
+  # ===== USERS MS ===== 
+  users-database:
+    image: postgres:13.5
+    container_name: users-database
+    restart: always
+    environment:
+      POSTGRES_DB: users
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./auth-ms/postgres:/var/lib/postgresql/data
+
+  users-ms:
+    image: users-ms
+    depends_on:
+      - users-database
+    container_name: users-microservice
+    
+    build:
+      context: ./auth-ms
+      dockerfile: dockerfile
+    
+    command:  npm run start:migrate:prod
+    
+    environment:
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${USERS_DATABASE_URL}
+      - JWT_SECRET=${JWT_SECRET}
 
   # ===== CLIENTS MS ===== 
   clients-database:
@@ -78,6 +122,8 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - '5433:5432'
+    volumes:
+      - ./clients-ms/postgres:/var/lib/postgresql/data
 
   clients-ms:
     depends_on:
@@ -86,11 +132,35 @@ services:
     container_name: clients-microservice
     build:
       context: ./clients-ms
-      dockerfile: dockerfile.prod
-  
+      dockerfile: dockerfile
     command:  npm run start:migrate:prod
-
     environment:
-      - PORT=3000
       - NATS_SERVERS=nats://nats-server:4222
       - DATABASE_URL=${CLIENTS_DATABASE_URL}
+
+
+  # ===== INVENTORIES MS ===== 
+  inventories-database:
+    image: postgres:13.5
+    container_name: inventories-database
+    environment:
+      POSTGRES_DB: inventories
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5434:5432'
+    volumes:
+      - ./inventories-ms/postgres:/var/lib/postgresql/data
+
+  inventories-ms:
+    depends_on:
+      - inventories-database
+    restart: always
+    container_name: inventories-microservice
+    build:
+      context: ./inventories-ms
+      dockerfile: dockerfile
+    command:  npm run start:migrate:prod
+    environment:
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${INVENTORIES_DATABASE_URL}
