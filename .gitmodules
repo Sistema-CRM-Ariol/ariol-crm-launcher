@@ -22,3 +22,6 @@
 [submodule "warehouses-ms"]
 	path = warehouses-ms
 	url = git@github.com:Sistema-CRM-Ariol/warehouses-ms.git
+[submodule "imports-ms"]
+	path = imports-ms
+	url = git@github.com:Sistema-CRM-Ariol/imports-ms.git
