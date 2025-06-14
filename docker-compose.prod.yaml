@@ -164,3 +164,29 @@ services:
     environment:
       - NATS_SERVERS=nats://nats-server:4222
       - DATABASE_URL=${INVENTORIES_DATABASE_URL}
+
+  # ===== INVENTORIES MS ===== 
+  imports-database:
+    image: postgres:13.5
+    container_name: imports-database
+    environment:
+      POSTGRES_DB: imports
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
+    ports:
+      - '5435:5432'
+    volumes:
+      - ./imports-ms/postgres:/var/lib/postgresql/data
+
+  imports-ms:
+    depends_on:
+      - imports-database
+    restart: always
+    container_name: imports-microservice
+    build:
+      context: ./imports-ms
+      dockerfile: dockerfile
+    command:  npm run start:migrate:prod
+    environment:
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${IMPORTS_DATABASE_URL}
