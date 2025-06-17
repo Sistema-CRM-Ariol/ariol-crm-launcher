@@ -13,9 +13,6 @@
 [submodule "expenses-ms"]
 	path = expenses-ms
 	url = git@github.com:Sistema-CRM-Ariol/expenses-ms.git
-[submodule "incomes-ms"]
-	path = incomes-ms
-	url = git@github.com:Sistema-CRM-Ariol/incomes-ms.git
 [submodule "inventories-ms"]
 	path = inventories-ms
 	url = git@github.com:Sistema-CRM-Ariol/inventories-ms.git
