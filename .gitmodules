@@ -25,3 +25,9 @@
 [submodule "exports-ms"]
 	path = exports-ms
 	url = git@github.com:Sistema-CRM-Ariol/exports-ms.git
+[submodule "leads-ms"]
+	path = leads-ms
+	url = git@github.com:Sistema-CRM-Ariol/leads-ms.git
+[submodule "providers-ms"]
+	path = providers-ms
+	url = git@github.com:Sistema-CRM-Ariol/providers-ms.git
