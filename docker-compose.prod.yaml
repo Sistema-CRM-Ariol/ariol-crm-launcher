@@ -204,21 +204,6 @@ services:
     volumes:
       - ./exports-ms/postgres:/var/lib/postgresql/data
   
-
-
-  # expenses-ms:
-  #   depends_on:
-  #     - expenses-database
-  #   restart: always
-  #   container_name: expenses-microservice
-  #   build:
-  #     context: ./expenses-ms
-  #     dockerfile: dockerfile
-  #   command:  npm run start:migrate:prod
-  #   environment:
-  #     - NATS_SERVERS=nats://nats-server:4222
-  #     - DATABASE_URL=${EXPENSES_DATABASE_URL}
-  
   # ===== LEADS MS ===== 
 
   leads-ms:
@@ -247,17 +232,29 @@ services:
     volumes:
       - ./leads-ms/postgres:/var/lib/postgresql/data
 
-  n8n-services:
-    image: n8nio/n8n
-    container_name: n8n-service
+  # ===== PROVIDERS MS ===== 
+  providers-ms:
+    depends_on:
+      - providers-database
+    restart: always
+    container_name: providers-microservice
+    build:
+      context: ./providers-ms
+      dockerfile: dockerfile
+    command:  npm run start:migrate:prod
     environment:
-      - N8N_HOST=localhost
-      - N8N_PROTOCOL=http
-      - N8N_PORT=5678
-      - N8N_BASIC_AUTH_ACTIVE=true
-      - N8N_BASIC_AUTH_USER=admin
-      - N8N_BASIC_AUTH_PASSWORD=password
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${PROVIDERS_DATABASE_URL}
+
+  providers-database:
+    image: postgres:13.5
+    container_name: providers-database
+    environment:
+      POSTGRES_DB: providers
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password
     ports:
-      - "5678:5678"
+      - '5438:5432'
     volumes:
-      - ./n8n-service:/home/node/.n8n
+      - ./providers-ms/postgres:/var/lib/postgresql/data
+
