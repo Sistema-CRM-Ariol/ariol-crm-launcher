@@ -10,9 +10,6 @@
 [submodule "auth-ms"]
 	path = auth-ms
 	url = git@github.com:Sistema-CRM-Ariol/auth-ms.git
-[submodule "expenses-ms"]
-	path = expenses-ms
-	url = git@github.com:Sistema-CRM-Ariol/expenses-ms.git
 [submodule "inventories-ms"]
 	path = inventories-ms
 	url = git@github.com:Sistema-CRM-Ariol/inventories-ms.git
@@ -28,3 +25,6 @@
 [submodule "providers-ms"]
 	path = providers-ms
 	url = git@github.com:Sistema-CRM-Ariol/providers-ms.git
+[submodule "outbounds-ms"]
+	path = outbounds-ms
+	url = git@github.com:Sistema-CRM-Ariol/outbounds-ms.git
