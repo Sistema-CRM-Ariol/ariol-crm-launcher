@@ -139,7 +139,7 @@ services:
       - DATABASE_URL=${CLIENTS_DATABASE_URL}
 
 
-  # ===== INVENTORIES MS ===== 
+  # # ===== INVENTORIES MS ===== 
   inventories-database:
     image: postgres:13.5
     container_name: inventories-database
@@ -192,17 +192,30 @@ services:
       - DATABASE_URL=${IMPORTS_DATABASE_URL}
 
   # ===== EXPORTS MS ===== 
-  exports-database:
+  expenses-database:
     image: postgres:13.5
-    container_name: exports-database
+    container_name: expenses-database
     environment:
-      POSTGRES_DB: exports
+      POSTGRES_DB: expenses
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
     ports:
       - '5436:5432'
     volumes:
-      - ./exports-ms/postgres:/var/lib/postgresql/data
+      - ./expenses-ms/postgres:/var/lib/postgresql/data
+
+  expenses-ms:
+    depends_on:
+      - expenses-database
+    restart: always
+    container_name: expenses-microservice
+    build:
+      context: ./expenses-ms
+      dockerfile: dockerfile
+    command:  npm run start:migrate:prod
+    environment:
+      - NATS_SERVERS=nats://nats-server:4222
+      - DATABASE_URL=${EXPENSES_DATABASE_URL}
   
   # ===== LEADS MS ===== 
 
